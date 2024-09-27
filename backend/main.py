@@ -35,10 +35,11 @@ class QuestionContext(BaseModel):
 async def load_model(model_info: ModelInfo):
     global framework
     try:
-        model_path = os.path.join(os.getcwd(), os.path.join(os.getcwd(),model_info.model_name))
-        tokenizer = AutoTokenizer.from_pretrained(model_path)
-        model = AutoModelForQuestionAnswering.from_pretrained(model_path)
-        framework = AdvancedReasoningFramework(model_name=None, local_model_path=None, model=model, tokenizer=tokenizer)
+        model_name = model_info.model_name
+        # model_path = os.path.join(os.getcwd(), os.path.join(os.getcwd(),model_info.model_name))
+        tokenizer = AutoTokenizer.from_pretrained(model_name)
+        model = AutoModelForQuestionAnswering.from_pretrained(model_name)
+        framework = AdvancedReasoningFramework(model_name=model_name, local_model_path=None, model=model, tokenizer=tokenizer)
         return {"message": "Model loaded successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error loading model: {str(e)}")

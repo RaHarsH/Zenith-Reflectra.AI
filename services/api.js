@@ -7,6 +7,7 @@ export const loadModel = async (modelName) => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ model_name: modelName }),
+    
   });
   return response.json();
 };

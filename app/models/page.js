@@ -9,7 +9,7 @@ const Models = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
   const modelsList = [
-    { name: 'Llama', id: 'model-1' },
+    { name: 'meta-llama/Llama-3.2-1B', id: 'model-1' },
     { name: 'AI Model 2', id: 'model-2' },
     { name: 'AI Model 3', id: 'model-3' },
     { name: 'AI Model 4', id: 'model-4' },
