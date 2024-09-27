@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 const Models = () => {
-  const isSignedIn = useAuth();
+  const { isSignedIn } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
 
   const modelsList = [
@@ -20,16 +20,15 @@ const Models = () => {
   );
 
   if(!isSignedIn) {
-    return <div>
+    return (<div className='w-[100vw] px-20 py-8 h-[100vh] text-white'>
             <p>Sign in to view this page</p>
-            {
-              alert('Sign in to view this page!')
-            }
             <Link href='/sign-in' >Sign in here</Link>
            </div>
+    )
   }
+
   return (
-    <div className='p-6'>
+    <div className='p-6 text-white'>
       <h1>Select a Model</h1>
       <p className='text-gray-400'>Currently available Models: {modelsList.length}</p>
 

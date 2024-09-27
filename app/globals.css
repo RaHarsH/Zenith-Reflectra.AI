@@ -2,21 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&display=swap');
+
 ::-webkit-scrollbar {
     width: 5px; 
     height: 12px; 
 }
 
 ::-webkit-scrollbar-track {
-    background: #f1f1f1; 
-    border-radius: 5px;
+    background: #020617; 
+    border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #232222; 
+    background: #8e8c8c; 
     border-radius: 10px; 
 }
 
 body {
-    background-color: #f3ede7;
+    background-color: #020617;
 }
+
+

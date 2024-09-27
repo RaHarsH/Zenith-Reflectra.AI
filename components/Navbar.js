@@ -29,7 +29,7 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className='w-1/2 rounded-full border h-16 bg-black text-white px-5 z-50 sticky top-5 mx-auto my-4 flex items-center justify-around'>
+    <nav className='w-1/2 rounded-full border border-gray-500 h-16 bg-black text-white px-5 z-50 sticky top-5 mx-auto my-4 flex items-center justify-around'>
       <div className='flex justify-between items-center'>
         <Link className='flex gap-2 items-center' href='/'>
           <span>Logo</span>
