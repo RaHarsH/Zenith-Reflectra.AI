@@ -5,6 +5,8 @@ import SplitType from "split-type";
 import { Lamp } from "@/components/Lamp";
 import About from "@/components/About";
 import { StarBackground } from "@/components/StarBackground";
+import Footer from "@/components/Footer";
+import Features from "@/components/Features";
 
 export default function Home() {
   const reflectraRef = useRef(null);
@@ -53,6 +55,7 @@ export default function Home() {
           </h2>
         </div>
         <About />
+        <Features />
       </div>
       
     </>
