@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { useUser, SignInButton, SignOutButton, UserButton } from '@clerk/nextjs';
+import Image from 'next/image';
 
 const Navbar = () => {
   const { isSignedIn, user } = useUser();
@@ -25,6 +26,7 @@ const Navbar = () => {
       title: 'Sign Up',
       link: '/sign-up',
       isButton: true,
+      action: isSignedIn ? <SignOutButton /> : <SignInButton />,
     },
   ];
 
@@ -32,8 +34,15 @@ const Navbar = () => {
     <nav className='w-1/2 rounded-full border border-gray-500 h-16 bg-black text-white px-5 z-50 sticky top-5 mx-auto my-4 flex items-center justify-around'>
       <div className='flex justify-between items-center'>
         <Link className='flex gap-2 items-center' href='/'>
-          <span>Logo</span>
-          <h3>Reflectra.AI</h3>
+          {/* <span>Logo</span>
+          <h3>Reflectra.AI</h3> */}
+          <Image
+          src="/logo.png"  
+          alt="Logo"
+          width={150}     
+          height={60}     
+          priority        
+          />
         </Link>
       </div>
 

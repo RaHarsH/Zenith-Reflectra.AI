@@ -7,6 +7,7 @@ import About from "@/components/About";
 import { StarBackground } from "@/components/StarBackground";
 import Footer from "@/components/Footer";
 import Features from "@/components/Features";
+import ModelCarousel from "@/components/ModelCarousel";
 
 export default function Home() {
   const reflectraRef = useRef(null);
@@ -56,6 +57,7 @@ export default function Home() {
         </div>
         <About />
         <Features />
+        <ModelCarousel />
       </div>
       
     </>
