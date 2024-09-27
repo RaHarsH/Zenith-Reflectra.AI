@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Interaction</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white">
+    <div class="container mx-auto p-8">
+        <h1 class="text-4xl font-bold mb-8 text-center">AI Model Interaction</h1>
+        
+        <!-- Model Load Form -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Load Model</h2>
+            <input type="text" id="modelName" placeholder="Enter model name" class="p-2 w-full bg-gray-800 border border-gray-600 rounded">
+            <button onclick="loadModel()" class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 mt-4 rounded">
+                Load Model
+            </button>
+        </div>
+
+        <!-- Dataset Upload Form -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Upload Dataset</h2>
+            <input type="file" id="datasetFile" class="p-2 w-full bg-gray-800 border border-gray-600 rounded">
+            <button onclick="uploadDataset()" class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 mt-4 rounded">
+                Upload Dataset
+            </button>
+        </div>
+
+        <!-- Process Question Form -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Process Question</h2>
+            <input type="text" id="question" placeholder="Enter your question" class="p-2 w-full bg-gray-800 border border-gray-600 rounded mb-2">
+            <textarea id="context" rows="4" placeholder="Enter context" class="p-2 w-full bg-gray-800 border border-gray-600 rounded"></textarea>
+            <button onclick="processQuestion()" class="bg-green-500 hover:bg-green-700 text-white py-2 px-4 mt-4 rounded">
+                Submit
+            </button>
+        </div>
+
+        <!-- Random Questions Section -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Get Random Questions</h2>
+            <button onclick="getRandomQuestions()" class="bg-purple-500 hover:bg-purple-700 text-white py-2 px-4 mt-4 rounded">
+                Get Random Questions
+            </button>
+            <ul id="randomQuestionsList" class="mt-4"></ul>
+        </div>
+
+        <!-- Save Model Section -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Save Model</h2>
+            <button onclick="saveModel()" class="bg-yellow-500 hover:bg-yellow-700 text-white py-2 px-4 mt-4 rounded">
+                Save Model
+            </button>
+            <p id="modelSaveResponse" class="mt-4"></p>
+        </div>
+
+        <!-- Download Model Section -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Download Model</h2>
+            <input type="text" id="modelId" placeholder="Enter model ID" class="p-2 w-full bg-gray-800 border border-gray-600 rounded">
+            <button onclick="downloadModel()" class="bg-red-500 hover:bg-red-700 text-white py-2 px-4 mt-4 rounded">
+                Download Model
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8000';  // Update this to your FastAPI server address
+
+        // Load Model
+        async function loadModel() {
+            const modelName = document.getElementById('modelName').value;
+            if (!modelName) {
+                alert('Please enter a model name.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/load_model`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ model_name: modelName }),
+                });
+
+                const data = await response.json();
+                alert(data.message);
+            } catch (error) {
+                alert('Error loading model: ' + error);
+            }
+        }
+
+        // Upload Dataset
+        async function uploadDataset() {
+            const fileInput = document.getElementById('datasetFile');
+            if (!fileInput.files[0]) {
+                alert('Please select a dataset file.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/upload_dataset`, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                const data = await response.json();
+                alert(data.message);
+            } catch (error) {
+                alert('Error uploading dataset: ' + error);
+            }
+        }
+
+        // Process Question
+        async function processQuestion() {
+            const question = document.getElementById('question').value;
+            const context = document.getElementById('context').value;
+
+            if (!question || !context) {
+                alert('Please enter both question and context.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/process_input`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ question: question, context: context }),
+                });
+
+                // Check if the response is okay
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+                const answer = data.answer; // Extract the answer
+                const thoughts = data.thoughts; // Extract the thoughts
+                let resultMessage = 'Answer: ' + answer + '\n\nThoughts:\n' + thoughts.join('\n');
+                alert(resultMessage);
+            } catch (error) {
+                alert('Error processing question: ' + error);
+            }
+        }
+
+        // Get Random Questions
+        async function getRandomQuestions() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/random_questions?n=5`);
+                const data = await response.json();
+
+                const list = document.getElementById('randomQuestionsList');
+                list.innerHTML = '';
+                data.random_questions.forEach((question) => {
+                    const li = document.createElement('li');
+                    li.textContent = question;
+                    list.appendChild(li);
+                });
+            } catch (error) {
+                alert('Error getting random questions: ' + error);
+            }
+        }
+
+        // Save Model
+        async function saveModel() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/save_model`, {
+                    method: 'POST',
+                });
+
+                const data = await response.json();
+                document.getElementById('modelSaveResponse').textContent = `Model saved with ID: ${data.model_id}`;
+            } catch (error) {
+                alert('Error saving model: ' + error);
+            }
+        }
+
+        // Download Model
+        async function downloadModel() {
+            const modelId = document.getElementById('modelId').value;
+            if (!modelId) {
+                alert('Please enter a model ID.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/download_model/${modelId}`, {
+                    method: 'GET',
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                // Create a blob from the response and create a link to download
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `model_${modelId}.zip`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+            } catch (error) {
+                alert('Error downloading model: ' + error);
+            }
+        }
+    </script>
+</body>
+</html>
