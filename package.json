@@ -19,6 +19,7 @@
     "next": "14.2.13",
     "react": "^18",
     "react-dom": "^18",
+    "react-syntax-highlighter": "^15.5.0",
     "reflectra": "file:",
     "split-type": "^0.3.4",
     "tailwind-merge": "^2.5.2",

@@ -1,5 +1,5 @@
 'use client'
-import Model from '@/components/model';
+import Model from '@/components/Model';
 import { useAuth } from '@clerk/nextjs';
 import Link from 'next/link';
 import { useState } from 'react';
