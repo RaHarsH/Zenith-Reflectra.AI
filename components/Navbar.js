@@ -77,7 +77,7 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className='w-1/2 rounded-full border border-gray-500 h-16 bg-black text-white px-5 z-50 sticky top-5 mx-auto my-4 flex items-center justify-between'>
+    <nav className='w-1/2 rounded-full border border-gray-500 h-16 bg-black text-white px-14 z-50 sticky top-5 mx-auto my-4 flex items-center justify-between'>
       <div className='flex justify-between items-center'>
         <Link className='flex gap-2 items-center' href='/'>
           <Image src="/logo.png" alt="Logo" width={150} height={60} priority />
