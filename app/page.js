@@ -8,6 +8,7 @@ import { StarBackground } from "@/components/StarBackground";
 import Footer from "@/components/Footer";
 import Features from "@/components/Features";
 import ModelCarousel from "@/components/ModelCarousel";
+import Link from "next/link";
 
 export default function Home() {
   const reflectraRef = useRef(null);
@@ -58,6 +59,13 @@ export default function Home() {
         <About />
         <Features />
         <ModelCarousel />
+        <div className='flex justify-end mt-10 pr-10 '>
+          <Link href='/models'
+          className='text-white px-4 py-2 border border-gray-300'
+          >
+            View models 
+          </Link>
+        </div>
       </div>
       
     </>

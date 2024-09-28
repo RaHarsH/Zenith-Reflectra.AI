@@ -7,8 +7,9 @@ import { loadModel, uploadDataset, processInput } from "@/services/api"; // Impo
 const SelectedModel = () => {
     const [isClicked, setIsClicked] = useState(false);
     const [selectedFiles, setSelectedFiles] = useState([]);
-    const [loading, setLoading] = useState(false); // For loading state
-    const [generateResult, setGenerateResult] = useState(null); // To store generation result
+    const [loading, setLoading] = useState(false); 
+    const [generateResult, setGenerateResult] = useState(null); 
+    const [progress, setProgress] = useState(0);
 
     const searchParams = useSearchParams();
     const modelName = searchParams.get('name');
@@ -23,18 +24,36 @@ const SelectedModel = () => {
         setIsClicked(true);
         try {
             setLoading(true);
+            simulateProgress(); // Start simulating progress bar
+
             // Call the loadModel API to load the model by model name
             const response = await loadModel(modelName);
             console.log('Model Loaded:', response);
             setLoading(false);
+            setProgress(100); 
         } catch (error) {
             console.error('Error loading model:', error);
             setLoading(false);
-        }
+            setProgress(100);         }
+    };
+
+    const simulateProgress = () => {
+        setProgress(0);
+        const interval = setInterval(() => {
+            setProgress((prev) => {
+                if (prev < 100) {
+                    return prev + 25; 
+                } else {
+                    clearInterval(interval); 
+                    return prev;
+                }
+            });
+        }, 500); // Increment the counter every 500ms
     };
 
     const closeHandler = () => {
         setIsClicked(false);
+        setProgress(0); // Reset progress when closed
     };
 
     const generateHandler = async () => {
@@ -45,20 +64,23 @@ const SelectedModel = () => {
 
         try {
             setLoading(true);
+            simulateProgress(); 
             // Upload the dataset
             const uploadResponse = await uploadDataset(selectedFiles[0]); // Assuming single file selection
             console.log('Dataset uploaded:', uploadResponse);
 
             // Process the input
-            const question = "Summarize the document"; // Example question or task
+            const question = "Summarize the document"; 
             const context = uploadResponse.datasetContext || "Some context from uploaded dataset";
             const processResponse = await processInput(question, context);
             console.log('Generated Result:', processResponse);
             setGenerateResult(processResponse);
             setLoading(false);
+            setProgress(100); 
         } catch (error) {
             console.error('Error during generation:', error);
             setLoading(false);
+            setProgress(100); 
         }
     };
 
@@ -146,7 +168,7 @@ const SelectedModel = () => {
                         <button
                             onClick={buttonHandler} 
                             className='bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-md'
-                            disabled={loading} // Disable button while loading
+                            disabled={loading} // Disable the button while loading
                         >
                             {loading ? 'Loading...' : 'Use this model'}
                         </button>
@@ -187,7 +209,17 @@ const SelectedModel = () => {
                                     disabled={loading} // Disable button while loading
                                 >
                                     {loading ? 'Generating...' : 'Generate'}
+                                    
                                 </button>
+                                    {/* to show the progress bar */}
+                                    {loading && 
+                                        <div className="progress-container mt-4 w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                                        <div
+                                            className="progress-bar bg-green-500 h-2.5 rounded-full"
+                                            style={{ width: `${progress}%` }} // Dynamically update progress bar
+                                        />
+                                        </div>
+                                    }
                             </div>
                         </div>
                     }
