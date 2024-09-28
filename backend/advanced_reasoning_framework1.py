@@ -1,3 +1,4 @@
+from fastapi import logger
 import torch
 from transformers import AutoModelForQuestionAnswering, AutoTokenizer
 from datasets import Dataset
@@ -38,17 +39,24 @@ class AdvancedReasoningFramework:
                 for file in files:
                     zip_file.write(os.path.join(root, file), file)
         return buffer.getvalue()
-
+    
     def process_input(self, question, context):
-        inputs = self.tokenizer(question, context, return_tensors="pt", truncation=True, max_length=512, padding="max_length")
-        inputs = {k: v.to(self.device) for k, v in inputs.items()}
-        with torch.no_grad():
+        try:
+            inputs = self.tokenizer.encode_plus(question, context, return_tensors="pt", max_length=512, truncation=True)
             outputs = self.model(**inputs)
+            
+            answer_start = torch.argmax(outputs.start_logits)
+            answer_end = torch.argmax(outputs.end_logits) + 1
+            answer = self.tokenizer.decode(inputs["input_ids"][0][answer_start:answer_end])
+            
+            # Generate thoughts (this is a placeholder, implement your own logic)
+            thoughts = f"Considered context from index {answer_start} to {answer_end}"
+            
+            return answer, thoughts
+        except Exception as e:
+            logger.error(f"Error in process_input: {str(e)}")
+            return str(e), "An error occurred during processing"
 
-        answer_start = torch.argmax(outputs.start_logits)
-        answer_end = torch.argmax(outputs.end_logits) + 1
-        answer = self.tokenizer.decode(inputs["input_ids"][0][answer_start:answer_end])
-        return self.chain_of_thought(question, context, answer)
 
     def chain_of_thought(self, question, context, initial_answer):
         thoughts = [
